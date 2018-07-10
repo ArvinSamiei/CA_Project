@@ -34,7 +34,7 @@ public class MainScene extends Scene {
 
     private void makeChangeMusicButton(Group root) {
         Button changeMusicButton = new Button("Change Music");
-        changeMusicButton.relocate(16 * 32, 0);
+        changeMusicButton.relocate(30 * 32, 0);
         root.getChildren().add(changeMusicButton);
         changeMusicButton.setOnMouseClicked(event -> {
             if (mediaPlayer.getMedia() == medias[0]) {
@@ -53,7 +53,7 @@ public class MainScene extends Scene {
         Group root = (Group) mainScene.getRoot();
         root.getChildren().clear();
         Button resetButton = new Button("Reset");
-        makeChangeMusicButton(root);
+
         Label mar = new Label("MAR : "+ Graphic.cpu.getDataPath().getRegs().get(0));
         try {
             ImageView background = new ImageView(new Image(new FileInputStream(new File("Untitled-2.jpg"))));
@@ -62,6 +62,7 @@ public class MainScene extends Scene {
             System.out.println("what");
             e.printStackTrace();
         }
+        makeChangeMusicButton(root);
 
     }
 }
