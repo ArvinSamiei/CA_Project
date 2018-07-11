@@ -1,19 +1,17 @@
 import CUModule.ControlSignal;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.css.Styleable;
-import javafx.css.StyleableStringProperty;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Graphic extends Application {
     static Label mdr;
@@ -39,12 +37,15 @@ public class Graphic extends Application {
     public void init() throws Exception {
         super.init();
     }
+
     static Button GoButton = new Button("Go");
     static Button stopButton = new Button("Stop");
     public Stage stage = new Stage();
     public Scene startMenu = new Scene(new Group(), 1280, 960, Color.BLUE);
     public Scene gameScene = new Scene(new Group(), 1280, 960, Color.GRAY);
+    boolean endOfInsts = false;
     Thread t = new Thread();
+
     @Override
     public void start(Stage primaryStage) throws Exception {
 
@@ -64,105 +65,156 @@ public class Graphic extends Application {
         tos = new Label("TOS : " + Graphic.cpu.getDataPath().getRegs().get(7).getValue());
         opc = new Label("OPC : " + Graphic.cpu.getDataPath().getRegs().get(8).getValue());
         h = new Label("MDR : " + Graphic.cpu.getDataPath().getRegs().get(9).getValue());
+
+
         GoButton.setOnMouseClicked(event -> {
+            endOfInsts = false;
+            String dastoor = textArea.getText();
+            String[] dastoors = dastoor.split("\n");
+            int i = 0;
+            int counter = 0;
+            for (String s : dastoors) {
+                counter++;
+                System.out.println(s);
+                String[] bakhshha = s.split(" ");
 
-            switch (textArea.getText()) {
 
-                case "BIPUSH":
-                    t = new Thread() {
-
-
-                        @Override
-                        public void run() {
-                            CPU.BIPUSH(cpu);
-
-                        }
-                    };
+                if (s.matches("BIPUSH .*")) {
+                    cpu.getMemory().getData()[i] = 16;
+                    cpu.getMemory().getData()[i + 1] = Integer.parseInt(bakhshha[1]);
+                    i += 2;
+//                    t = new Thread() {
+//
+//
+//                        @Override
+//                        public void run() {
+//                            CPU.BIPUSH(cpu);
+//
+//                        }
+//                    };
                     isWorking = true;
-                    break;
-                case "IADD":
-                    t = new Thread() {
-
-
-                        @Override
-                        public void run() {
-                            CPU.IADD(cpu);
-                        }
-                    };
+                }
+                if (s.matches("IADD")) {
+                    cpu.getMemory().getData()[i] = 96;
+                    i++;
+//                    t = new Thread() {
+//
+//
+//                        @Override
+//                        public void run() {
+//                            CPU.IADD(cpu);
+//                        }
+//                    };
                     isWorking = true;
-                    break;
-                case "IF_ICMPEQ":
-                    t = new Thread() {
-
-
-                        @Override
-                        public void run() {
-                            CPU.IF_ICMPEQ(cpu);
-                        }
-                    };
+                }
+                if (s.matches("IF_ICMPEQ.*")) {
+                    cpu.getMemory().getData()[i] = 159;
+                    cpu.getMemory().getData()[i + 1] = Integer.parseInt(bakhshha[1]);
+                    i += 2;
+//                    t = new Thread() {
+//
+//
+//                        @Override
+//                        public void run() {
+//                            CPU.IF_ICMPEQ(cpu);
+//                        }
+//                    };
                     isWorking = true;
-                    break;
-                case "IFEQ":
-                    t = new Thread() {
-
-
-                        @Override
-                        public void run() {
-                            CPU.IFEQ(cpu);
-                        }
-                    };
+                }
+                if (s.matches("IFEQ .*")) {
+                    cpu.getMemory().getData()[i] = 153;
+                    cpu.getMemory().getData()[i + 1] = Integer.parseInt(bakhshha[1]);
+                    i += 2;
+//                    t = new Thread() {
+//
+//
+//                        @Override
+//                        public void run() {
+//                            CPU.IFEQ(cpu);
+//                        }
+//                    };
                     isWorking = true;
-                    break;
-                case "IINC_VARNUM":
-                    t = new Thread() {
-
-
-                        @Override
-                        public void run() {
-                            CPU.IINC_varnum(cpu);
-                        }
-                    };
+                }
+                if (s.matches("IINC_VARNUM .*")) {
+                    cpu.getMemory().getData()[i] = 132;
+                    cpu.getMemory().getData()[i + 1] = Integer.parseInt(bakhshha[1]);
+                    cpu.getMemory().getData()[i + 2] = Integer.parseInt(bakhshha[2]);
+                    i += 3;
+//                    t = new Thread() {
+//
+//
+//                        @Override
+//                        public void run() {
+//                            CPU.IINC_varnum(cpu);
+//                        }
+//                    };
                     isWorking = true;
-                    break;
-                case "ILOAD_VARNUM":
-                    t = new Thread() {
-
-
-                        @Override
-                        public void run() {
-                            CPU.ILOAD_varnum(cpu);
-                        }
-                    };
+                }
+                if (s.matches("ILOAD_VARNUM .*")) {
+                    cpu.getMemory().getData()[i] = 21;
+                    cpu.getMemory().getData()[i + 1] = Integer.parseInt(bakhshha[1]);
+                    i += 2;
+//                    t = new Thread() {
+//
+//
+//                        @Override
+//                        public void run() {
+//                            CPU.ILOAD_varnum(cpu);
+//                        }
+//                    };
                     isWorking = true;
-                    break;
-                case "ISTOR_VARNUM":
-                    t = new Thread() {
-
-
-                        @Override
-                        public void run() {
-                            CPU.ISTORE_varnum(cpu);
-                        }
-                    };
+                }
+                if (s.matches("ISTORE_VARNUM .*")) {
+                    cpu.getMemory().getData()[i] = 54;
+                    cpu.getMemory().getData()[i + 1] = Integer.parseInt(bakhshha[1]);
+                    i += 2;
+//                    t = new Thread() {
+//
+//
+//                        @Override
+//                        public void run() {
+//                            CPU.ISTORE_varnum(cpu);
+//                        }
+//                    };
                     isWorking = true;
-                    break;
-                case "ISUB":
-                    t = new Thread() {
-
-
-                        @Override
-                        public void run() {
-                            CPU.ISUB(cpu);
-                        }
-                    };
+                }
+                if (s.matches("ISUB .*")) {
+                    cpu.getMemory().getData()[i] = 100;
+                    i += 1;
+//                    t = new Thread() {
+//
+//
+//                        @Override
+//                        public void run() {
+//                            CPU.ISUB(cpu);
+//                        }
+//                    };
                     isWorking = true;
-                    break;
+                }
+
+
+//                t.start();
+                isDone.setText("wait");
+//                try {
+//                    t.join();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+                if (counter != dastoors.length) {
+                    CPU.isDone = false;
+                }
 
             }
-
-            CPU.isDone = false;
+            Thread t = new Thread(){
+                @Override
+                public void run() {
+                    CPU.execute(cpu);
+                }
+            };
             t.start();
-            isDone.setText("wait");
+//            for (int i1 : cpu.getMemory().getData()) {
+//                System.out.println(i1);
+//            }
 
         });
         stopButton.setOnMouseClicked(event -> {
@@ -216,17 +268,21 @@ public class Graphic extends Application {
             if (stage.getScene() instanceof MainScene) {
                 MainScene mainScene = (MainScene) stage.getScene();
                 Group root = (Group) mainScene.getRoot();
-                if (CPU.isDone == true){
+                if (CPU.isDone == true && endOfInsts) {
                     isDone.setText("Done");
+                    for (int i : cpu.getMemory().getData()) {
+                        System.out.printf("%d ",i);
+                        stop();
+                    }
                 }
 
-                if (bool == false){
+                if (bool == false) {
                     root.getChildren().add(textArea);
-                    root.getChildren().addAll(GoButton,stopButton,isDone);
-                    isDone.relocate(500,0);
+                    root.getChildren().addAll(GoButton, stopButton, isDone);
+                    isDone.relocate(500, 0);
 
-                    GoButton.relocate(310,0);
-                    stopButton.relocate(310,30);
+                    GoButton.relocate(310, 0);
+                    stopButton.relocate(310, 30);
                     textArea.setMaxWidth(300);
                     textArea.setMaxHeight(100);
                     bool = true;
@@ -283,8 +339,8 @@ public class Graphic extends Application {
                     root.getChildren().add(h);
 
                     HBox hBox = new HBox();
-                    hBox.relocate(10,600);
-                    hBox.getChildren().addAll(b_bus_control,c_bus_control,memory_control,ALU__control,ALU_shifter);
+                    hBox.relocate(10, 600);
+                    hBox.getChildren().addAll(b_bus_control, c_bus_control, memory_control, ALU__control, ALU_shifter);
                     root.getChildren().add(hBox);
 
                     b_bus_control.setFont(nazanin);
@@ -299,18 +355,10 @@ public class Graphic extends Application {
                     ALU_shifter.setTextFill(Color.BROWN);
 
 
-
-
-
-
                     mainSceneMade = true;
                 }
 
 
-                if (isWorking == false) {
-
-
-                }
                 mar.setText("MAR : " + Graphic.cpu.getDataPath().getRegs().get(0).getValue());
                 mdr.setText("MDR : " + Graphic.cpu.getDataPath().getRegs().get(1).getValue());
                 pc.setText("PC : " + Graphic.cpu.getDataPath().getRegs().get(2).getValue());
@@ -322,14 +370,14 @@ public class Graphic extends Application {
                 opc.setText("OPC : " + Graphic.cpu.getDataPath().getRegs().get(8).getValue());
                 h.setText("MDR : " + Graphic.cpu.getDataPath().getRegs().get(9).getValue());
                 ControlSignal controlSignal = cpu.getCu().getControlSignal();
-                b_bus_control.setText("b bus Control : "+cpu.getCu().getControlSignal().getB_bus_control()[8]+cpu.getCu().getControlSignal().getB_bus_control()[7]+cpu.getCu().getControlSignal().getB_bus_control()[6]+cpu.getCu().getControlSignal().getB_bus_control()[5]+cpu.getCu().getControlSignal().getB_bus_control()[4]+cpu.getCu().getControlSignal().getB_bus_control()[3]+cpu.getCu().getControlSignal().getB_bus_control()[2]+cpu.getCu().getControlSignal().getB_bus_control()[1]+cpu.getCu().getControlSignal().getB_bus_control()[0]);
-                c_bus_control.setText("c bus control : "+cpu.getCu().getControlSignal().getC_bus()[8]+cpu.getCu().getControlSignal().getC_bus()[7]+cpu.getCu().getControlSignal().getC_bus()[6]+cpu.getCu().getControlSignal().getC_bus()[5]+cpu.getCu().getControlSignal().getC_bus()[4]+cpu.getCu().getControlSignal().getC_bus()[3]+cpu.getCu().getControlSignal().getC_bus()[2]+cpu.getCu().getControlSignal().getC_bus()[1]+cpu.getCu().getControlSignal().getC_bus()[0]);
+                b_bus_control.setText("b bus Control : " + cpu.getCu().getControlSignal().getB_bus_control()[8] + cpu.getCu().getControlSignal().getB_bus_control()[7] + cpu.getCu().getControlSignal().getB_bus_control()[6] + cpu.getCu().getControlSignal().getB_bus_control()[5] + cpu.getCu().getControlSignal().getB_bus_control()[4] + cpu.getCu().getControlSignal().getB_bus_control()[3] + cpu.getCu().getControlSignal().getB_bus_control()[2] + cpu.getCu().getControlSignal().getB_bus_control()[1] + cpu.getCu().getControlSignal().getB_bus_control()[0]);
+                c_bus_control.setText("c bus control : " + cpu.getCu().getControlSignal().getC_bus()[8] + cpu.getCu().getControlSignal().getC_bus()[7] + cpu.getCu().getControlSignal().getC_bus()[6] + cpu.getCu().getControlSignal().getC_bus()[5] + cpu.getCu().getControlSignal().getC_bus()[4] + cpu.getCu().getControlSignal().getC_bus()[3] + cpu.getCu().getControlSignal().getC_bus()[2] + cpu.getCu().getControlSignal().getC_bus()[1] + cpu.getCu().getControlSignal().getC_bus()[0]);
                 int[] Memory_Control_Signals = controlSignal.getMemory_control();
                 int[] ALU_SHIFT_CONTROLS = controlSignal.getALU_shifter();
                 int[] ALU_CONTROL = controlSignal.getALU_control();
-                memory_control.setText("memory control : "+controlSignal.getMemory_control()[4]+controlSignal.getMemory_control()[3]+Memory_Control_Signals[2]+Memory_Control_Signals[1]+Memory_Control_Signals[0]);
-                ALU_shifter.setText("alu shift control : "+ALU_SHIFT_CONTROLS[1]+ALU_SHIFT_CONTROLS[0]);
-                ALU__control.setText("alu control : "+ALU_CONTROL[5]+ALU_CONTROL[4]+ALU_CONTROL[3]+ALU_CONTROL[2]+ALU_CONTROL[1]+ALU_CONTROL[1]);
+                memory_control.setText("memory control : " + controlSignal.getMemory_control()[4] + controlSignal.getMemory_control()[3] + Memory_Control_Signals[2] + Memory_Control_Signals[1] + Memory_Control_Signals[0]);
+                ALU_shifter.setText("alu shift control : " + ALU_SHIFT_CONTROLS[1] + ALU_SHIFT_CONTROLS[0]);
+                ALU__control.setText("alu control : " + ALU_CONTROL[5] + ALU_CONTROL[4] + ALU_CONTROL[3] + ALU_CONTROL[2] + ALU_CONTROL[1] + ALU_CONTROL[1]);
             }
         }
     };
@@ -340,8 +388,8 @@ public class Graphic extends Application {
 //        CPU cpu = new CPU();
         launch(args);
 
-        cpu.reset();
-        cpu.getMemory().initial();
+//        cpu.reset();
+//        cpu.getMemory().initial();
 //        ControllerClass controller = new ControllerClass();
 //        example(cpu);
     }

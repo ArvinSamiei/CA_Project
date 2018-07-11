@@ -17,6 +17,10 @@ public class Memory {
     public Memory(){
     }
 
+    public int[] getData() {
+        return data;
+    }
+
     public void reset(){
         for (int i = 0; i < data.length; i++) {
             data[i] = 0;
