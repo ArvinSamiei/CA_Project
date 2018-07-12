@@ -9,6 +9,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -64,7 +65,7 @@ public class Graphic extends Application {
         cpp = new Label("CPP : " + Graphic.cpu.getDataPath().getRegs().get(6).getValue());
         tos = new Label("TOS : " + Graphic.cpu.getDataPath().getRegs().get(7).getValue());
         opc = new Label("OPC : " + Graphic.cpu.getDataPath().getRegs().get(8).getValue());
-        h = new Label("MDR : " + Graphic.cpu.getDataPath().getRegs().get(9).getValue());
+        h = new Label("H : " + Graphic.cpu.getDataPath().getRegs().get(9).getValue());
 
 
         GoButton.setOnMouseClicked(event -> {
@@ -164,7 +165,7 @@ public class Graphic extends Application {
 //                    };
                     isWorking = true;
                 }
-                if (s.matches("ISTORE_VARNUM .*")) {
+                if (s.matches("ISTORE .*")) {
                     cpu.getMemory().getData()[i] = 54;
                     cpu.getMemory().getData()[i + 1] = Integer.parseInt(bakhshha[1]);
                     i += 2;
@@ -205,7 +206,7 @@ public class Graphic extends Application {
                 }
 
             }
-            Thread t = new Thread(){
+            Thread t = new Thread() {
                 @Override
                 public void run() {
                     CPU.execute(cpu);
@@ -268,12 +269,35 @@ public class Graphic extends Application {
             if (stage.getScene() instanceof MainScene) {
                 MainScene mainScene = (MainScene) stage.getScene();
                 Group root = (Group) mainScene.getRoot();
-                if (CPU.isDone == true && endOfInsts) {
+                if (CPU.isDone == true) {
                     isDone.setText("Done");
+                    String s1 = "";
+                    int counter = 0;
                     for (int i : cpu.getMemory().getData()) {
-                        System.out.printf("%d ",i);
-                        stop();
+                        s1 = s1 + " home " + counter + ":" + i+" | ";
+                        counter++;
                     }
+                    System.out.println(s1);
+                    TextArea memLabel = new TextArea(s1);
+//                    memLabel.setMaxWidth(500);
+                    memLabel.relocate(0, 700);
+                    memLabel.setMaxWidth(500);
+                    memLabel.setMaxHeight(100);
+//                    memLabel.setStyle("-fx-background-color: \n" +
+//                            "        #a6b5c9,\n" +
+//                            "        linear-gradient(#686868 0%, #232723 25%, #373837 75%, #757575 100%),\n" +
+//                            "        linear-gradient(#020b02, #3a3a3a),\n" +
+//                            "        linear-gradient(#9d9e9d 0%, #6b6a6b 20%, #343534 80%, #242424 100%),\n" +
+//                            "        radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));\n" +
+//                            "    -fx-background-radius: 5,4,3,5;\n" +
+//                            "    -fx-background-insets: 0,1,2,0;\n" +
+//                            "    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );\n" +
+//                            "    -fx-font-family: \"Nazanin\";\n" +
+//                            "    -fx-font-size: 25px;\n" +
+//                            "    -fx-padding: 10 20 10 20;" +
+//                            "-fx-font-weight: bold;");
+                    root.getChildren().add(memLabel);
+                    CPU.isDone = false;
                 }
 
                 if (bool == false) {
@@ -368,7 +392,7 @@ public class Graphic extends Application {
                 cpp.setText("CPP : " + Graphic.cpu.getDataPath().getRegs().get(6).getValue());
                 tos.setText("TOS : " + Graphic.cpu.getDataPath().getRegs().get(7).getValue());
                 opc.setText("OPC : " + Graphic.cpu.getDataPath().getRegs().get(8).getValue());
-                h.setText("MDR : " + Graphic.cpu.getDataPath().getRegs().get(9).getValue());
+                h.setText("H : " + Graphic.cpu.getDataPath().getRegs().get(9).getValue());
                 ControlSignal controlSignal = cpu.getCu().getControlSignal();
                 b_bus_control.setText("b bus Control : " + cpu.getCu().getControlSignal().getB_bus_control()[8] + cpu.getCu().getControlSignal().getB_bus_control()[7] + cpu.getCu().getControlSignal().getB_bus_control()[6] + cpu.getCu().getControlSignal().getB_bus_control()[5] + cpu.getCu().getControlSignal().getB_bus_control()[4] + cpu.getCu().getControlSignal().getB_bus_control()[3] + cpu.getCu().getControlSignal().getB_bus_control()[2] + cpu.getCu().getControlSignal().getB_bus_control()[1] + cpu.getCu().getControlSignal().getB_bus_control()[0]);
                 c_bus_control.setText("c bus control : " + cpu.getCu().getControlSignal().getC_bus()[8] + cpu.getCu().getControlSignal().getC_bus()[7] + cpu.getCu().getControlSignal().getC_bus()[6] + cpu.getCu().getControlSignal().getC_bus()[5] + cpu.getCu().getControlSignal().getC_bus()[4] + cpu.getCu().getControlSignal().getC_bus()[3] + cpu.getCu().getControlSignal().getC_bus()[2] + cpu.getCu().getControlSignal().getC_bus()[1] + cpu.getCu().getControlSignal().getC_bus()[0]);

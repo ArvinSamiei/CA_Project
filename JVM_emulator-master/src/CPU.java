@@ -157,6 +157,8 @@ public class CPU {
             cpu.getCu().fetch();
             cpu.next_clock();
             int opcode = cpu.dataPath.get_opcode();
+            System.out.println(opcode);
+            cpu.getDataPath().getRegs().get(8).setValue(opcode);
             if (opcode == 16){
                 cpu.getCu().fetch_w();
                 cpu.next_clock();
@@ -365,7 +367,10 @@ public class CPU {
             }
             else {
                 end = true;
+                isDone = true;
             }
+            cpu.getCu().pc_pc_1_sub();
+            cpu.next_clock();
         }
     }
 
@@ -398,8 +403,6 @@ public class CPU {
         cpu.next_clock();
         cpu.getCu().write();
         cpu.next_clock();
-        isDone = true;
-        System.out.println(isDone);
     }
 
     public static void offset(CPU cpu){
@@ -425,7 +428,6 @@ public class CPU {
         cpu.next_clock();
         cpu.getCu().pc_pc_h_add();
         cpu.next_clock();
-        isDone = true;
 
     }
 
@@ -459,7 +461,6 @@ public class CPU {
         cpu.next_clock();
         cpu.getCu().write();
         cpu.next_clock();
-        isDone = true;
 
     }
 
@@ -498,7 +499,6 @@ public class CPU {
         cpu.next_clock();
         cpu.getCu().pc_pc_h_add();
         cpu.next_clock();
-        isDone = true;
     }
 
     public static void IF_ICMPEQ(CPU cpu){
@@ -548,7 +548,6 @@ public class CPU {
         cpu.next_clock();
         cpu.getCu().pc_pc_h_add();
         cpu.next_clock();
-        isDone = true;
     }
 
     public static void IINC_varnum(CPU cpu){
@@ -606,7 +605,6 @@ public class CPU {
         cpu.next_clock();
         cpu.getCu().write();
         cpu.next_clock();
-        isDone = true;
     }
 
     public static void ILOAD_varnum(CPU cpu){
@@ -635,7 +633,6 @@ public class CPU {
         cpu.next_clock();
         cpu.getCu().write();
         cpu.next_clock();
-        isDone = true;
     }
 
     public static void ISTORE_varnum(CPU cpu){
@@ -666,7 +663,6 @@ public class CPU {
         cpu.next_clock();
         cpu.getCu().write();
         cpu.next_clock();
-        isDone = true;
     }
 
     public static void ISUB(CPU cpu){
@@ -699,7 +695,6 @@ public class CPU {
         cpu.next_clock();
         cpu.getCu().write();
         cpu.next_clock();
-        isDone = true;
 
     }
 

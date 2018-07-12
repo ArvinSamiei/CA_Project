@@ -8,7 +8,7 @@ public class Reg {
         this.value = value;
     }
 
-    void setValue(int value) {
+    public void setValue(int value) {
         this.value = value;
     }
 
