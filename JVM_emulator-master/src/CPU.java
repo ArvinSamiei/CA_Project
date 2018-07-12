@@ -3,12 +3,6 @@ import CUModule.ControlSignal;
 import DataPathModule.Bus;
 import DataPathModule.DataPath;
 import RamModule.Memory;
-import javafx.animation.AnimationTimer;
-import javafx.application.Application;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 
 
 public class CPU {
@@ -63,10 +57,11 @@ public class CPU {
         cu.setN(dataPath.get_N());
         Thread t = Thread.currentThread();
         try {
-            t.sleep(1000);
+            t.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        //TODO: dont
 
     }
 
@@ -134,6 +129,7 @@ public class CPU {
                 cpu.next_clock();
                 cpu.getCu().mar_sp_sp_h_add();
                 cpu.next_clock();
+//                System.out.println("finish");
                 cpu.getCu().nop();
                 cpu.getCu().write();
                 cpu.next_clock();
@@ -158,8 +154,9 @@ public class CPU {
             cpu.next_clock();
             int opcode = cpu.dataPath.get_opcode();
             System.out.println(opcode);
-            cpu.getDataPath().getRegs().get(8).setValue(opcode);
+//            cpu.getDataPath().getRegs().get(8).setValue(opcode);
             if (opcode == 16){
+                cpu.getCu().nop();
                 cpu.getCu().fetch_w();
                 cpu.next_clock();
                 cpu.getCu().mdr_mbr();
@@ -168,16 +165,21 @@ public class CPU {
                 cpu.next_clock();
                 cpu.getCu().mar_sp_sp_h_add();
                 cpu.next_clock();
+                cpu.getCu().nop();
                 cpu.getCu().write();
                 cpu.next_clock();
+                System.out.println("finish");
             }
             else if (opcode == 167){
+                cpu.getCu().nop();
                 cpu.getCu().fetch_w();
                 cpu.next_clock();
                 cpu.getCu().h_mbr();
                 cpu.next_clock();
+                cpu.getCu().nop();
                 cpu.getCu().fetch();
                 cpu.next_clock();
+                cpu.getCu().nop();
                 cpu.getCu().fetch_w();
                 cpu.next_clock();
                 cpu.getCu().h_mbr_h_add();
@@ -186,68 +188,111 @@ public class CPU {
                 cpu.next_clock();
             }
             else if (opcode == 96){
+                cpu.getCu().nop();
                 cpu.getCu().fetch_w();
                 cpu.next_clock();
                 cpu.getCu().mar_sp();
                 cpu.next_clock();
-                cpu.getCu().read();
                 cpu.getCu().pc_pc_1_sub();
-                cpu.next_clock();
-                cpu.getCu().read_w();
-                cpu.getCu().mar_sp_sp_h_add();
-                cpu.next_clock();
                 cpu.getCu().read();
-                cpu.getCu().h_mdr();
                 cpu.next_clock();
+                cpu.getCu().mar_sp_sp_h_sub();
+                cpu.getCu().read_w();
+                cpu.next_clock();
+                cpu.getCu().h_mdr();
+                cpu.getCu().read();
+                cpu.next_clock();
+                cpu.getCu().nop();
                 cpu.getCu().read_w();
                 cpu.next_clock();
                 cpu.getCu().mdr_mdr_h_add();
                 cpu.next_clock();
+                cpu.getCu().nop();
                 cpu.getCu().write();
                 cpu.next_clock();
             }
             else if (opcode == 153){
+                cpu.getCu().nop();
                 cpu.getCu().fetch_w();
                 cpu.next_clock();
                 cpu.getCu().mar_sp();
                 cpu.next_clock();
-                cpu.getCu().read();
                 cpu.getCu().pc_pc_1_add();
+                cpu.getCu().read();
                 cpu.next_clock();
+                cpu.getCu().nop();
                 cpu.getCu().read_w();
                 cpu.next_clock();
                 cpu.getCu().h_mdr();
                 cpu.next_clock();
-                cpu.getCu().pc_pc_1_sub();
-                cpu.next_clock();
-                cpu.getCu().h_mbr();
-                cpu.getCu().shift(8);
-                cpu.next_clock();
-                cpu.getCu().fetch();
-                cpu.next_clock();
+                if (cpu.getDataPath().get_Z()) {
+                    cpu.getCu().pc_pc_1_sub();
+                    cpu.next_clock();
+                    cpu.getCu().h_mbr();
+                    cpu.getCu().shift(8);
+                    cpu.next_clock();
+                    cpu.getCu().nop();
+                    cpu.getCu().fetch();
+                    cpu.next_clock();
+                    cpu.getCu().nop();
+                    cpu.getCu().fetch_w();
+                    cpu.next_clock();
+                    cpu.getCu().h_mbr_h_add();
+                    cpu.next_clock();
+                    cpu.getCu().pc_pc_h_add();
+                    cpu.next_clock();
+                }
+            }
+            else if (opcode == 155){
+                cpu.getCu().nop();
                 cpu.getCu().fetch_w();
                 cpu.next_clock();
-                cpu.getCu().h_mbr_h_add();
+                cpu.getCu().mar_sp();
                 cpu.next_clock();
-                cpu.getCu().pc_pc_h_add();
+                cpu.getCu().pc_pc_1_add();
+                cpu.getCu().read();
                 cpu.next_clock();
+                cpu.getCu().nop();
+                cpu.getCu().read_w();
+                cpu.next_clock();
+                cpu.getCu().h_mdr();
+                cpu.next_clock();
+                if (cpu.getDataPath().get_N()) {
+                    cpu.getCu().pc_pc_1_sub();
+                    cpu.next_clock();
+                    cpu.getCu().h_mbr();
+                    cpu.getCu().shift(8);
+                    cpu.next_clock();
+                    cpu.getCu().nop();
+                    cpu.getCu().fetch();
+                    cpu.next_clock();
+                    cpu.getCu().nop();
+                    cpu.getCu().fetch_w();
+                    cpu.next_clock();
+                    cpu.getCu().h_mbr_h_add();
+                    cpu.next_clock();
+                    cpu.getCu().pc_pc_h_add();
+                    cpu.next_clock();
+                }
             }
             else if (opcode == 159){
+                cpu.getCu().nop();
                 cpu.getCu().fetch_w();
                 cpu.next_clock();
                 cpu.getCu().mar_sp();
                 cpu.next_clock();
                 cpu.getCu().h_4();
                 cpu.next_clock();
-                cpu.getCu().read();
                 cpu.getCu().pc_pc_1_add();
+                cpu.getCu().read();
                 cpu.next_clock();
-                cpu.getCu().read_w();
                 cpu.getCu().mar_sp_sp_h_sub();
+                cpu.getCu().read_w();
                 cpu.next_clock();
                 cpu.getCu().tos_mdr();
                 cpu.getCu().read();
                 cpu.next_clock();
+                cpu.getCu().nop();
                 cpu.getCu().read_w();
                 cpu.next_clock();
                 cpu.getCu().mar_sp_sp_h_add();
@@ -256,36 +301,42 @@ public class CPU {
                 cpu.next_clock();
                 cpu.getCu().mdr_mdr_h_sub();
                 cpu.next_clock();
-                cpu.getCu().pc_pc_1_sub();
-                cpu.next_clock();
-                cpu.getCu().h_mbr();
-                cpu.getCu().shift(8);
-                cpu.next_clock();
-                cpu.getCu().fetch();
-                cpu.next_clock();
-                cpu.getCu().fetch_w();
-                cpu.next_clock();
-                cpu.getCu().h_mbr_h_add();
-                cpu.next_clock();
-                cpu.getCu().pc_pc_h_add();
-                cpu.next_clock();
+                if(cpu.getDataPath().get_Z()) {
+                    cpu.getCu().pc_pc_1_sub();
+                    cpu.next_clock();
+                    cpu.getCu().h_mbr();
+                    cpu.getCu().shift(8);
+                    cpu.next_clock();
+                    cpu.getCu().nop();
+                    cpu.getCu().fetch();
+                    cpu.next_clock();
+                    cpu.getCu().nop();
+                    cpu.getCu().fetch_w();
+                    cpu.next_clock();
+                    cpu.getCu().h_mbr_h_add();
+                    cpu.next_clock();
+                    cpu.getCu().pc_pc_h_add();
+                    cpu.next_clock();
+                }
             }
             else if(opcode == 132){
+                cpu.getCu().nop();
                 cpu.getCu().fetch_w();
                 cpu.next_clock();
                 cpu.getCu().mar_sp();
                 cpu.next_clock();
                 cpu.getCu().h_4();
                 cpu.next_clock();
-                cpu.getCu().read();
                 cpu.getCu().pc_pc_1_add();
+                cpu.getCu().read();
                 cpu.next_clock();
-                cpu.getCu().read_w();
                 cpu.getCu().mar_sp_sp_h_sub();
+                cpu.getCu().read_w();
                 cpu.next_clock();
                 cpu.getCu().tos_mdr();
                 cpu.getCu().read();
                 cpu.next_clock();
+                cpu.getCu().nop();
                 cpu.getCu().read_w();
                 cpu.next_clock();
                 cpu.getCu().mar_sp_sp_h_add();
@@ -299,8 +350,10 @@ public class CPU {
                 cpu.getCu().h_mbr();
                 cpu.getCu().shift(8);
                 cpu.next_clock();
+                cpu.getCu().nop();
                 cpu.getCu().fetch();
                 cpu.next_clock();
+                cpu.getCu().nop();
                 cpu.getCu().fetch_w();
                 cpu.next_clock();
                 cpu.getCu().h_mbr_h_add();
@@ -309,6 +362,7 @@ public class CPU {
                 cpu.next_clock();
             }
             else if (opcode == 21){
+                cpu.getCu().nop();
                 cpu.getCu().fetch_w();
                 cpu.next_clock();
                 cpu.getCu().h_mbr();
@@ -316,52 +370,58 @@ public class CPU {
                 cpu.next_clock();
                 cpu.getCu().mar_lv_h_add();
                 cpu.next_clock();
-                cpu.getCu().read();
                 cpu.getCu().h_4();
+                cpu.getCu().read();
                 cpu.next_clock();
-                cpu.getCu().read_w();
                 cpu.getCu().mar_sp_sp_h_add();
+                cpu.getCu().read_w();
                 cpu.next_clock();
+                cpu.getCu().nop();
                 cpu.getCu().write();
                 cpu.next_clock();
             }
             else if (opcode == 54){
+                cpu.getCu().nop();
                 cpu.getCu().fetch_w();
                 cpu.next_clock();
                 cpu.getCu().mar_sp();
                 cpu.next_clock();
-                cpu.getCu().read();
                 cpu.getCu().h_4();
+                cpu.getCu().read();
                 cpu.next_clock();
-                cpu.getCu().read_w();
                 cpu.getCu().mar_sp_sp_h_sub();
+                cpu.getCu().read_w();
                 cpu.next_clock();
                 cpu.getCu().h_mbr();
                 cpu.getCu().shift(2);
                 cpu.next_clock();
                 cpu.getCu().mar_lv_h_add();
                 cpu.next_clock();
+                cpu.getCu().nop();
                 cpu.getCu().write();
                 cpu.next_clock();
             }
             else if (opcode == 100){
+                cpu.getCu().nop();
                 cpu.getCu().fetch_w();
                 cpu.next_clock();
                 cpu.getCu().mar_sp();
                 cpu.next_clock();
-                cpu.getCu().read();
                 cpu.getCu().pc_pc_1_sub();
-                cpu.next_clock();
-                cpu.getCu().read_w();
-                cpu.getCu().mar_sp_sp_h_add();
-                cpu.next_clock();
                 cpu.getCu().read();
-                cpu.getCu().h_mdr();
                 cpu.next_clock();
+                cpu.getCu().mar_sp_sp_h_add();
+                cpu.getCu().read_w();
+                cpu.next_clock();
+                cpu.getCu().h_mdr();
+                cpu.getCu().read();
+                cpu.next_clock();
+                cpu.getCu().nop();
                 cpu.getCu().read_w();
                 cpu.next_clock();
                 cpu.getCu().mdr_mdr_h_sub();
                 cpu.next_clock();
+                cpu.getCu().nop();
                 cpu.getCu().write();
                 cpu.next_clock();
             }
@@ -369,8 +429,8 @@ public class CPU {
                 end = true;
                 isDone = true;
             }
-            cpu.getCu().pc_pc_1_sub();
-            cpu.next_clock();
+//            cpu.getCu().pc_pc_1_sub();
+//            cpu.next_clock();
         }
     }
 

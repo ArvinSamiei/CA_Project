@@ -9,10 +9,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Graphic extends Application {
     static Label mdr;
@@ -110,8 +107,9 @@ public class Graphic extends Application {
                 }
                 if (s.matches("IF_ICMPEQ.*")) {
                     cpu.getMemory().getData()[i] = 159;
-                    cpu.getMemory().getData()[i + 1] = Integer.parseInt(bakhshha[1]);
-                    i += 2;
+                    cpu.getMemory().getData()[i + 1] = Integer.parseInt(bakhshha[1]) / 256;
+                    cpu.getMemory().getData()[i + 2] = Integer.parseInt(bakhshha[1]) % 256;
+                    i += 3;
 //                    t = new Thread() {
 //
 //
@@ -124,8 +122,9 @@ public class Graphic extends Application {
                 }
                 if (s.matches("IFEQ .*")) {
                     cpu.getMemory().getData()[i] = 153;
-                    cpu.getMemory().getData()[i + 1] = Integer.parseInt(bakhshha[1]);
-                    i += 2;
+                    cpu.getMemory().getData()[i + 1] = Integer.parseInt(bakhshha[1]) / 256;
+                    cpu.getMemory().getData()[i + 2] = Integer.parseInt(bakhshha[1]) % 256;
+                    i += 3;
 //                    t = new Thread() {
 //
 //
@@ -136,7 +135,22 @@ public class Graphic extends Application {
 //                    };
                     isWorking = true;
                 }
-                if (s.matches("IINC_VARNUM .*")) {
+                if (s.matches("IFLT .*")) {
+                    cpu.getMemory().getData()[i] = 155;
+                    cpu.getMemory().getData()[i + 1] = Integer.parseInt(bakhshha[1]) / 256;
+                    cpu.getMemory().getData()[i + 2] = Integer.parseInt(bakhshha[1]) % 256;
+                    i += 3;
+//                    t = new Thread() {
+//
+//
+//                        @Override
+//                        public void run() {
+//                            CPU.IFEQ(cpu);
+//                        }
+//                    };
+                    isWorking = true;
+                }
+                if (s.matches("IINC .*")) {
                     cpu.getMemory().getData()[i] = 132;
                     cpu.getMemory().getData()[i + 1] = Integer.parseInt(bakhshha[1]);
                     cpu.getMemory().getData()[i + 2] = Integer.parseInt(bakhshha[2]);
@@ -151,7 +165,7 @@ public class Graphic extends Application {
 //                    };
                     isWorking = true;
                 }
-                if (s.matches("ILOAD_VARNUM .*")) {
+                if (s.matches("ILOAD .*")) {
                     cpu.getMemory().getData()[i] = 21;
                     cpu.getMemory().getData()[i + 1] = Integer.parseInt(bakhshha[1]);
                     i += 2;
@@ -190,6 +204,15 @@ public class Graphic extends Application {
 //                            CPU.ISUB(cpu);
 //                        }
 //                    };
+                    isWorking = true;
+                }
+
+                if (s.matches("GOTO .*")) {
+                    cpu.getMemory().getData()[i] = 167;
+                    int a = Integer.parseInt(bakhshha[1]);
+                    cpu.getMemory().getData()[i + 1] = a / 256;
+                    cpu.getMemory().getData()[i + 2] = a % 256;
+                    i += 3;
                     isWorking = true;
                 }
 
@@ -274,7 +297,7 @@ public class Graphic extends Application {
                     String s1 = "";
                     int counter = 0;
                     for (int i : cpu.getMemory().getData()) {
-                        s1 = s1 + " home " + counter + ":" + i+" | ";
+                        s1 = s1 + " home " + counter + ":" + i + " | ";
                         counter++;
                     }
                     System.out.println(s1);
@@ -387,12 +410,12 @@ public class Graphic extends Application {
                 mdr.setText("MDR : " + Graphic.cpu.getDataPath().getRegs().get(1).getValue());
                 pc.setText("PC : " + Graphic.cpu.getDataPath().getRegs().get(2).getValue());
                 mbr.setText("MBR : " + Graphic.cpu.getDataPath().getRegs().get(3).getValue());
-                sp.setText("SP : " + Graphic.cpu.getDataPath().getRegs().get(4).getValue());
-                lv.setText("LV : " + Graphic.cpu.getDataPath().getRegs().get(5).getValue());
-                cpp.setText("CPP : " + Graphic.cpu.getDataPath().getRegs().get(6).getValue());
-                tos.setText("TOS : " + Graphic.cpu.getDataPath().getRegs().get(7).getValue());
-                opc.setText("OPC : " + Graphic.cpu.getDataPath().getRegs().get(8).getValue());
-                h.setText("H : " + Graphic.cpu.getDataPath().getRegs().get(9).getValue());
+                sp.setText("SP : " + Graphic.cpu.getDataPath().getRegs().get(5).getValue());
+                lv.setText("LV : " + Graphic.cpu.getDataPath().getRegs().get(6).getValue());
+                cpp.setText("CPP : " + Graphic.cpu.getDataPath().getRegs().get(7).getValue());
+                tos.setText("TOS : " + Graphic.cpu.getDataPath().getRegs().get(8).getValue());
+                opc.setText("OPC : " + Graphic.cpu.getDataPath().getRegs().get(9).getValue());
+                h.setText("H : " + Graphic.cpu.getDataPath().getRegs().get(10).getValue());
                 ControlSignal controlSignal = cpu.getCu().getControlSignal();
                 b_bus_control.setText("b bus Control : " + cpu.getCu().getControlSignal().getB_bus_control()[8] + cpu.getCu().getControlSignal().getB_bus_control()[7] + cpu.getCu().getControlSignal().getB_bus_control()[6] + cpu.getCu().getControlSignal().getB_bus_control()[5] + cpu.getCu().getControlSignal().getB_bus_control()[4] + cpu.getCu().getControlSignal().getB_bus_control()[3] + cpu.getCu().getControlSignal().getB_bus_control()[2] + cpu.getCu().getControlSignal().getB_bus_control()[1] + cpu.getCu().getControlSignal().getB_bus_control()[0]);
                 c_bus_control.setText("c bus control : " + cpu.getCu().getControlSignal().getC_bus()[8] + cpu.getCu().getControlSignal().getC_bus()[7] + cpu.getCu().getControlSignal().getC_bus()[6] + cpu.getCu().getControlSignal().getC_bus()[5] + cpu.getCu().getControlSignal().getC_bus()[4] + cpu.getCu().getControlSignal().getC_bus()[3] + cpu.getCu().getControlSignal().getC_bus()[2] + cpu.getCu().getControlSignal().getC_bus()[1] + cpu.getCu().getControlSignal().getC_bus()[0]);

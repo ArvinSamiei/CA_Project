@@ -7,9 +7,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -26,10 +24,10 @@ public class MainScene extends Scene {
     public MainScene(Parent root, double width, double height, Paint fill, Stage stage) {
         super(root, width, height, fill);
         makeMainScene(this, stage);
-        medias[0] = new Media(new File("music/02 Vay Behalesh.mp3").toURI().toString());
-        medias[1] = new Media(new File("music/Aamin - Shafa.mp3").toURI().toString());
-        mediaPlayer = new MediaPlayer(medias[0]);
-        mediaPlayer.play();
+//        medias[0] = new Media(new File("music/02 Vay Behalesh.mp3").toURI().toString());
+//        medias[1] = new Media(new File("music/Aamin - Shafa.mp3").toURI().toString());
+//        mediaPlayer = new MediaPlayer(medias[0]);
+//        mediaPlayer.play();
     }
 
     private void makeChangeMusicButton(Group root) {
